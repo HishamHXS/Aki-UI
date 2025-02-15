@@ -8,11 +8,12 @@ const apiClient = axios.create({
   },
 })
 
-// Function to add the Bearer token to headers for each request
 const setAuthHeader = () => {
   const token = sessionStorage.getItem('token')
   if (token) {
-    apiClient.defaults.headers['Authorization'] = `Bearer ${token}`
+    apiClient.defaults.headers.common['Authorization'] = `${token}`
+  } else {
+    console.warn('No token found in sessionStorage')
   }
 }
 

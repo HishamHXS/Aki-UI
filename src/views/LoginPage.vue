@@ -25,7 +25,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { AxiosError } from 'axios'
-import { nonAuthPost } from '../api'
+import { nonAuthPost } from '../axios'
 
 const router = useRouter()
 const username = ref('')

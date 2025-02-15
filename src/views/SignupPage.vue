@@ -33,7 +33,7 @@
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { AxiosError } from 'axios'
-import { nonAuthPost } from '../api'
+import { nonAuthPost } from '../axios'
 
 export default defineComponent({
   name: 'SignupPage',

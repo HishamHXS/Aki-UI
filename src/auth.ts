@@ -1,6 +1,6 @@
 import { jwtDecode } from 'jwt-decode'
 
-export function getUsernameFromToken(): string | null {
+export function getIdFromToken(): string | null {
   const token = sessionStorage.getItem('token')?.split(' ')[1]
 
   if (!token || token.split('.').length !== 3) {
