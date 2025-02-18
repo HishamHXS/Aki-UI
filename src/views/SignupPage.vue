@@ -29,58 +29,46 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { AxiosError } from 'axios'
 import { nonAuthPost } from '../axios'
 
-export default defineComponent({
-  name: 'SignupPage',
-  setup() {
-    const router = useRouter()
-    const username = ref('')
-    const password = ref('')
-    const confirmPassword = ref('')
-    const errorMessage = ref('')
+const router = useRouter()
+const username = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+const errorMessage = ref('')
 
-    const submitForm = async () => {
-      const formData = {
-        username: username.value,
-        password: password.value,
-      }
+const submitForm = async () => {
+  const formData = {
+    username: username.value,
+    password: password.value,
+  }
 
-      JSON.stringify(formData)
+  JSON.stringify(formData)
 
-      try {
-        const response = await nonAuthPost('/users', formData)
+  try {
+    const response = await nonAuthPost('/users', formData)
 
-        if (response.status === 200) {
-          router.push('/home')
-        }
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          if (error.response) {
-            errorMessage.value = error.response.data.message || 'Something went wrong!'
-          } else if (error.request) {
-            errorMessage.value = 'No response received from the server.'
-          } else {
-            errorMessage.value = `Error: ${error.message}`
-          }
-        } else {
-          errorMessage.value = 'An unexpected error occurred'
-        }
-      }
+    if (response.status === 200) {
+      router.push('/home')
     }
-    return {
-      username,
-      password,
-      confirmPassword,
-      errorMessage,
-      submitForm,
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      if (error.response) {
+        errorMessage.value = error.response.data.message || 'Something went wrong!'
+      } else if (error.request) {
+        errorMessage.value = 'No response received from the server.'
+      } else {
+        errorMessage.value = `Error: ${error.message}`
+      }
+    } else {
+      errorMessage.value = 'An unexpected error occurred'
     }
-  },
-})
+  }
+}
 </script>
 
 <style scoped>
