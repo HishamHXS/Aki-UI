@@ -99,7 +99,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { getIdFromToken } from '../auth'
@@ -107,147 +107,126 @@ import { get, post } from '../axios'
 import { formatTimestamp } from '../helper/date'
 import type { Post } from '../types/post'
 import type { Comment } from '../types/comment'
-import { Carousel, Slide } from 'vue3-carousel'
-export default {
-  name: 'App',
-  setup() {
-    const router = useRouter()
-    const id = getIdFromToken()
-    const username = ref()
-    const posts = ref(<Post[]>[])
-    const newPost = ref({
-      title: '',
-      content: '',
-      userId: id,
-    })
-    const newComment = ref({
-      content: '',
-      postId: '',
-      userId: id,
-    })
 
-    if (!id) {
-      router.push('/login')
-    }
+const router = useRouter()
+const id = getIdFromToken()
+const username = ref()
+const posts = ref(<Post[]>[])
+const newPost = ref({
+  title: '',
+  content: '',
+  userId: id,
+})
+const newComment = ref({
+  content: '',
+  postId: '',
+  userId: id,
+})
 
-    const getAllPosts = async () => {
-      try {
-        const response = await get('posts')
-        posts.value = await Promise.all(
-          response.data.map(async (post: Post) => {
-            post.username = (await getUsernameByUserId(post.userId)) || 'Unknown'
-
-            post.comments = (await getCommentsByPostId(post.id)) || []
-            return post
-          }),
-        )
-      } catch (error) {
-        console.error('Error fetching posts:', error)
-      }
-    }
-
-    const getCommentsByPostId = async (postId: number) => {
-      try {
-        const response = await get(`comments/post/${postId}`)
-
-        const updatedComments = await Promise.all(
-          response.data.map(async (comment: Comment) => {
-            const commentUsername = await getUsernameByUserId(comment.userId)
-            return {
-              ...comment,
-              username: commentUsername,
-            }
-          }),
-        )
-        return updatedComments
-      } catch (error) {
-        console.error('Error fetching comments for post', error)
-        return []
-      }
-    }
-
-    const createPost = async () => {
-      if (newPost.value.title && newPost.value.content) {
-        try {
-          const response = await post('posts', newPost.value)
-          posts.value.push(response.data)
-          newPost.value.title = ''
-          newPost.value.content = ''
-        } catch (error) {
-          console.error('Error creating post', error)
-        }
-      }
-    }
-
-    const addComment = async (id: number) => {
-      if (newComment.value.content && newComment.value.userId) {
-        try {
-          const commentToAdd = {
-            ...newComment.value,
-            postId: id,
-          }
-
-          await post('comments', commentToAdd)
-          newComment.value.content = ''
-        } catch (error) {
-          console.error('Error creating comment', error)
-        }
-      } else {
-        console.warn('Content and userId are required for a comment.')
-      }
-    }
-
-    const getUsername = async () => {
-      try {
-        const response = await get(`users/${id}`)
-        username.value = response.data.username
-      } catch (error) {
-        console.error('Error fetching user', error)
-      }
-    }
-
-    const getUsernameByUserId = async (id: number): Promise<string | null> => {
-      try {
-        const response = await get(`users/${id}`)
-        return response.data.username
-      } catch (error) {
-        console.error('Error fetching username', error)
-        return null
-      }
-    }
-
-    const handleKeydown = (id: number, event: KeyboardEvent) => {
-      if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault()
-        addComment(id)
-      }
-    }
-
-    const logout = () => {
-      router.push('/').then(() => {
-        sessionStorage.clear()
-        window.location.reload()
-      })
-    }
-
-    onMounted(getAllPosts)
-    onMounted(getUsername)
-
-    return {
-      username,
-      router,
-      posts,
-      logout,
-      formatTimestamp,
-      getUsernameByUserId,
-      createPost,
-      newPost,
-      newComment,
-      addComment,
-      handleKeydown,
-      Carousel,
-      Slide,
-    }
-  },
+if (!id) {
+  router.push('/login')
 }
+
+const getAllPosts = async () => {
+  try {
+    const response = await get('posts')
+    posts.value = await Promise.all(
+      response.data.map(async (post: Post) => {
+        post.username = (await getUsernameByUserId(post.userId)) || 'Unknown'
+
+        post.comments = (await getCommentsByPostId(post.id)) || []
+        return post
+      }),
+    )
+  } catch (error) {
+    console.error('Error fetching posts:', error)
+  }
+}
+
+const getCommentsByPostId = async (postId: number) => {
+  try {
+    const response = await get(`comments/post/${postId}`)
+
+    const updatedComments = await Promise.all(
+      response.data.map(async (comment: Comment) => {
+        const commentUsername = await getUsernameByUserId(comment.userId)
+        return {
+          ...comment,
+          username: commentUsername,
+        }
+      }),
+    )
+    return updatedComments
+  } catch (error) {
+    console.error('Error fetching comments for post', error)
+    return []
+  }
+}
+
+const createPost = async () => {
+  if (newPost.value.title && newPost.value.content) {
+    try {
+      const response = await post('posts', newPost.value)
+      posts.value.push(response.data)
+      newPost.value.title = ''
+      newPost.value.content = ''
+    } catch (error) {
+      console.error('Error creating post', error)
+    }
+  }
+}
+
+const addComment = async (id: number) => {
+  if (newComment.value.content && newComment.value.userId) {
+    try {
+      const commentToAdd = {
+        ...newComment.value,
+        postId: id,
+      }
+
+      await post('comments', commentToAdd)
+      newComment.value.content = ''
+    } catch (error) {
+      console.error('Error creating comment', error)
+    }
+  } else {
+    console.warn('Content and userId are required for a comment.')
+  }
+}
+
+const getUsername = async () => {
+  try {
+    const response = await get(`users/${id}`)
+    username.value = response.data.username
+  } catch (error) {
+    console.error('Error fetching user', error)
+  }
+}
+
+const getUsernameByUserId = async (id: number): Promise<string | null> => {
+  try {
+    const response = await get(`users/${id}`)
+    return response.data.username
+  } catch (error) {
+    console.error('Error fetching username', error)
+    return null
+  }
+}
+
+const handleKeydown = (id: number, event: KeyboardEvent) => {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault()
+    addComment(id)
+  }
+}
+
+const logout = () => {
+  router.push('/').then(() => {
+    sessionStorage.clear()
+    window.location.reload()
+  })
+}
+
+onMounted(getAllPosts)
+onMounted(getUsername)
 </script>
