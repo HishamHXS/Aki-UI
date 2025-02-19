@@ -1,29 +1,60 @@
 <template>
-  <div id="signup-page">
-    <section class="signup-form">
-      <h1>Create Your Account</h1>
+  <div class="flex flex-col items-center justify-center min-h-screen bg-[#8b795e]">
+    <section class="bg-[#f3e8db] p-8 rounded-xl shadow-md max-w-md w-full text-center">
+      <h1 class="text-[1.8rem] mb-4 text-[#5a4736] font-bold">Create your Account</h1>
       <form @submit.prevent="submitForm">
-        <div class="input-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" v-model="username" required />
+        <div class="mb-4 text-left">
+          <label for="username" class="block font-bold mb-1 text-[#6d5b4b]">Username</label>
+          <input
+            type="text"
+            id="username"
+            v-model="username"
+            required
+            class="w-full px-3 py-2 border border-[#b6a694] rounded-md text-lg bg-[#ece2d0] transition-colors duration-300 focus:border-[#8b7252] focus:outline-none"
+          />
         </div>
 
-        <div class="input-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" v-model="password" required />
+        <div class="mb-4 text-left">
+          <label for="password" class="block font-bold mb-1 text-[#6d5b4b]">Password</label>
+          <input
+            type="password"
+            id="password"
+            v-model="password"
+            required
+            class="w-full px-3 py-2 border border-[#b6a694] rounded-md text-lg bg-[#ece2d0] transition-colors duration-300 focus:border-[#8b7252] focus:outline-none"
+          />
         </div>
 
-        <div class="input-group">
-          <label for="confirmPassword">Confirm Password</label>
-          <input type="password" id="confirmPassword" v-model="confirmPassword" required />
+        <div class="mb-4 text-left">
+          <label for="confirmPassword" class="block font-bold mb-1 text-[#6d5b4b]"
+            >Confirm Password</label
+          >
+          <input
+            type="password"
+            id="confirmPassword"
+            v-model="confirmPassword"
+            required
+            class="w-full px-3 py-2 border border-[#b6a694] rounded-md text-lg bg-[#ece2d0] transition-colors duration-300 focus:border-[#8b7252] focus:outline-none"
+          />
         </div>
 
-        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+        <div v-if="errorMessage" class="text-[#8c3a2b] mb-4 text-[0.9rem]">{{ errorMessage }}</div>
 
-        <button type="submit" class="cta-button">Sign Up</button>
+        <button
+          type="submit"
+          class="w-full bg-[#6b5638] text-white px-4 py-2 rounded-md text-lg font-bold transition-all duration-300 hover:bg-[#54412d] hover:scale-105"
+        >
+          Sign Up
+        </button>
       </form>
-      <p class="login-link">
-        Already have an account? <router-link to="/login">Login</router-link>
+      <p class="mt-4 text-[0.9rem] text-[#6d5b4b]">
+        Already have an account?
+        <router-link
+          to="/login"
+          class="text-[#8b7252] font-bold no-underline hover:underline hover:text-[#5a4736]"
+        >
+          Login
+        </router-link>
       </p>
     </section>
   </div>
@@ -53,7 +84,7 @@ const submitForm = async () => {
     const response = await nonAuthPost('/users', formData)
 
     if (response.status === 200) {
-      router.push('/home')
+      router.push('/login')
     }
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -70,101 +101,3 @@ const submitForm = async () => {
   }
 }
 </script>
-
-<style scoped>
-#signup-page {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: #8b795e;
-}
-
-.signup-form {
-  background: #f3e8db;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-}
-
-h1 {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-  color: #5a4736;
-  font-weight: bold;
-}
-
-.input-group {
-  margin-bottom: 1rem;
-  text-align: left;
-}
-
-.input-group label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #6d5b4b;
-}
-
-.input-group input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #b6a694;
-  border-radius: 5px;
-  font-size: 1rem;
-  background-color: #ece2d0;
-  transition: border-color 0.3s;
-}
-
-.input-group input:focus {
-  border-color: #8b7252;
-  outline: none;
-}
-
-.error-message {
-  color: #8c3a2b;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-}
-
-.cta-button {
-  width: 100%;
-  background-color: #6b5638;
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  font-weight: bold;
-  transition:
-    background-color 0.3s,
-    transform 0.2s;
-}
-
-.cta-button:hover {
-  background-color: #54412d;
-  transform: scale(1.05);
-}
-
-.login-link {
-  margin-top: 1rem;
-  font-size: 0.9rem;
-  color: #6d5b4b;
-}
-
-.login-link a {
-  color: #8b7252;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.login-link a:hover {
-  text-decoration: underline;
-  color: #5a4736;
-}
-</style>
